@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+    <title>Lab 4</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style type="text/css">
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+        body {
+            margin-bottom: 40px;
+            /* Margin bottom by footer height */
+        }
+        .bg {
+            background-image: url("wheat.png");
+            background-repeat: repeat;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* div {
+            border: 2px solid rgb(94, 33, 33);
+            padding: 0px;
+        } */
+
+        .sign {
+            float: left; /* Выравнивание по правому краю */
+            border: 1px solid #333; /* Параметры рамки */
+            padding: 3px; /* Поля внутри блока */
+            margin: 1px; /* Отступы вокруг */
+            background: #96e0f3; /* Цвет фона */
+        }
+        .sign figcaption {
+            margin: auto;
+            text-align: center; /* Отступы вокруг абзаца */
+            font-family: fantasy;
+            color:rgb(70, 9, 110);
+        }
+        .padding-left-right {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+        .text-category {
+            text-align: center;
+            font-family: fantasy;
+            font-size: 180%;
+            color: rgb(165, 31, 71);
+
+        }
+        .bg-container {
+            background-image: url("cloud.png");
+            background-repeat: repeat;
+            background-size: 300px 300px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40px; /* Set the fixed height of the footer here */
+            line-height: 40px; /* Vertically center the text there */
+            background-color: rgb(6, 29, 36);
+            color: rgb(70, 9, 110);
+            text-align: center;
+            font-family: cursive;
+            font-size: 180%;
+        }
+        .text-btn {
+            text-align: center;
+            font-family: fantasy;
+            font-size: 130%;
+            color: rgb(70, 9, 110);
+            padding: 0
+        }
+        .error{
+            text-align: center;
+            font-size: 130%;
+            color:red;
+            margin: 0;
+            width: 100%;
+            padding: 0;
+        }
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 1s;
+            /* background-color:royalblue; */
+            }
+        .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+            opacity: 0;
+            /* background-color:royalblue; */
+        }
+        .row{
+            margin: 0
+        }
+    </style>
+</head>
+
+<body class="bg">
+    <div class="container rounded" id="app">
+        <div class="row">
+            <button type="submit" class="btn btn-primary btn-block text-btn" v-on:click.prevent="getFaces()">
+                Get Faces from Server Api
+            </button>
+            <transition name="fade">
+                <div v-if="errored" class="alert alert-warning error" role="alert">
+                    We're sorry, we're not able to retrieve this information at the moment, please try back later
+                </div>
+            </transition>
+        </div>
+        <transition name="fade">
+            <div v-if="show" class="bg-container">
+                <div class="row" v-for="(category, indexCat) in categories" :key="indexCat">
+                    <div class="w-100 text-category">{{outputCat(indexCat)}}</div>
+                    <div class=" thumb justify-content-center" v-for="(face, indexFace) in category.faces" :key="indexFace">
+                        <figure class="sign thumbnail rounded">
+                            <img v-bind:src="'data:image/jpeg;base64,'+face.Bitmap" width="150" height="150">
+                            <figcaption> {{outputInfo(indexCat, indexFace)}} </figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </div>
+    <footer class="footer">made by Ilia Egorov</footer>
+
+    <script src="js/jquery-3.2.1.slim.min.js" ></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/vue.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.min.js"></script> -->
+    <script src="app.js"></script>
+</body>
+
+</html>
+
+<!--    <form>
+        <div class="row justify-content-center" v-for="(attendee, index) in attendees" :key="index">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="sr-only">Name</label>
+                    <input class="form-control" aria-describedby="emailHelp" placeholder="Enter name" v-model="attendee.name"
+                        name="attendees[][name]" required>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="sr-only">Email address</label>
+                    <input type="email" class="form-control" placeholder="Enter email" v-model="attendee.email"
+                        name="attendees[][email]" required>
+                </div>
+            </div>
+            <div class="col-sm-2 text-left">
+                <button type="button" class="btn btn-light" v-on:click.prevent="removeAttendee(index)" v-show="quantity > 1">
+                    <span aria-hidden="true">×</span>
+                    Remove
+                </button>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-secondary" v-on:click="addAttendee">
+                    Add Attendee
+                </button>
+            </div>
+        </div>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <span class="unit-price">${{ cost }} ea.</span>
+            </div>
+            <div class="col-sm-2 text-left">
+                <button type="submit" class="btn btn-primary">
+                    Pay ${{ checkoutTotal }}
+                </button>
+            </div>
+        </div>
+        <form> -->
